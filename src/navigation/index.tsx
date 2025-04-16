@@ -9,10 +9,12 @@ import { Image } from 'react-native';
 import bell from '../assets/bell.png';
 import newspaper from '../assets/newspaper.png';
 import { Home } from './screens/Home';
-import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
 import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
+import New from './screens/New';
+import { UserIcon } from '../assets/svgIcon';
+import Profile from './screens/Profile';
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
@@ -47,6 +49,14 @@ const HomeTabs = createBottomTabNavigator({
         ),
       },
     },
+    Profile: {
+      screen: Profile,
+      options: {
+        tabBarIcon: ({ color }) => (
+          <UserIcon color={color} />
+        )
+      }
+    }
   },
 });
 
@@ -61,18 +71,24 @@ const RootStack = createNativeStackNavigator({
     },
     Profile: {
       screen: Profile,
-      linking: {
-        path: ':user(@[a-zA-Z0-9-_]+)',
-        parse: {
-          user: (value) => value.replace(/^@/, ''),
-        },
-        stringify: {
-          user: (value) => `@${value}`,
-        },
-      },
+      options:{
+        title: 'Profile',
+        headerShown: true
+      }
     },
     Settings: {
       screen: Settings,
+      options: ({ navigation }) => ({
+        presentation: 'modal',
+        headerRight: () => (
+          <HeaderButton onPress={navigation.goBack}>
+            <Text>Close</Text>
+          </HeaderButton>
+        ),
+      }),
+    },
+    New: {
+      screen: New,
       options: ({ navigation }) => ({
         presentation: 'modal',
         headerRight: () => (
