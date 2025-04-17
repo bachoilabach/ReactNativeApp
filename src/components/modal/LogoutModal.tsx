@@ -20,7 +20,7 @@ const LogoutModal = ({
 	showModal: boolean;
 	closeModal: () => void;
 }) => {
-	const a = 123123123123
+	const a = 123123123123213123123
 	const [isLoading, setIsLoading] = useState(false);
 	const fadeAnim = useAnimatedValue(0);
 	const handleLogout = () => {
