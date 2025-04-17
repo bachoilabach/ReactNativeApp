@@ -57,23 +57,29 @@ const PostDetailModal = ({
 			onRequestClose={closePostDetailModal}>
 			<TouchableWithoutFeedback onPress={closePostDetailModal}>
 				<View style={styles.container}>
-					<View style={styles.modalContent}>
-						{loading ? (
-							<ActivityIndicator size="large" color="#0000ff" />
-						) : (
-							<View>
+					<TouchableWithoutFeedback>
+						<View style={styles.modalContent}>
+							{loading ? (
+								<ActivityIndicator size="large" color="#0000ff" />
+							) : (
 								<View>
-									<Text style={styles.title}>Title: {postDetail?.title}</Text>
-									<Text style={styles.meta}>User ID: {postDetail?.userId}</Text>
-									<Text style={styles.meta}>Post ID: {postDetail?.id}</Text>
-									<Text style={styles.body}>Body: {postDetail?.body}</Text>
-								</View>
-								<TouchableOpacity style={styles.buttonClose} onPress={closePostDetailModal}>
+									<View>
+										<Text style={styles.title}>Title: {postDetail?.title}</Text>
+										<Text style={styles.meta}>
+											User ID: {postDetail?.userId}
+										</Text>
+										<Text style={styles.meta}>Post ID: {postDetail?.id}</Text>
+										<Text style={styles.body}>Body: {postDetail?.body}</Text>
+									</View>
+									<TouchableOpacity
+										style={styles.buttonClose}
+										onPress={closePostDetailModal}>
 										<Text style={styles.buttonCloseText}>Close</Text>
-								</TouchableOpacity>
-							</View>
-						)}
-					</View>
+									</TouchableOpacity>
+								</View>
+							)}
+						</View>
+					</TouchableWithoutFeedback>
 				</View>
 			</TouchableWithoutFeedback>
 		</Modal>
