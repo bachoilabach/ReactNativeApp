@@ -13,8 +13,8 @@ import { Settings } from './screens/Settings';
 import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
 import New from './screens/New';
-import { UserIcon } from '../assets/svgIcon';
-import Profile from './screens/Profile';
+import { PostIcon, UserIcon } from '../assets/svgIcon';
+import Posts from './screens/Posts';
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
@@ -49,11 +49,11 @@ const HomeTabs = createBottomTabNavigator({
         ),
       },
     },
-    Profile: {
-      screen: Profile,
+    Posts: {
+      screen: Posts,
       options: {
         tabBarIcon: ({ color }) => (
-          <UserIcon color={color} />
+          <PostIcon color={color} />
         )
       }
     }
@@ -69,10 +69,10 @@ const RootStack = createNativeStackNavigator({
         headerShown: false,
       },
     },
-    Profile: {
-      screen: Profile,
+    Pots: {
+      screen: Posts,
       options:{
-        title: 'Profile',
+        title: 'Posts',
         headerShown: true
       }
     },
@@ -90,7 +90,7 @@ const RootStack = createNativeStackNavigator({
     New: {
       screen: New,
       options: ({ navigation }) => ({
-        presentation: 'modal',
+        // presentation: 'modal',
         headerRight: () => (
           <HeaderButton onPress={navigation.goBack}>
             <Text>Close</Text>
