@@ -1,11 +1,11 @@
 import { StyleSheet, FlatList, Text, View, TextInput } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import PostItem from '../../components/Post/PostItem';
-import { useDebounce } from '../../hooks/useDebounce';
-import { getAllPosts } from '../../services/post.services';
-import { Post } from '../../model/Post.model';
-import { useIsFocused } from '@react-navigation/native';
+import { Post } from '@/src/model/post.model';
+import { useDebounce } from '@/src/hooks/useDebounce';
+import { getAllPosts } from '@/src/services/post.services';
+import PostItem from '@/src/components/Post/PostItem';
+
 
 export default function Posts() {
   const [posts, setPosts] = useState<Post[]>([]);

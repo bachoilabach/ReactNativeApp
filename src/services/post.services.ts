@@ -1,5 +1,5 @@
 import http from '../config/axios';
-import { Post } from '../model/Post.model'
+import { Post } from '../model/post.model';
 
 export const getAllPosts = async (): Promise<Post[]> => {
   const response = await http.get('/posts');
@@ -16,7 +16,7 @@ export const getAllUsers = async () => {
   return response.data;
 };
 
-export const editPost = async(id: number,data: object) : Promise<Post> => {
-  let response = await http.put(`/posts/${id}`,data)
-  return response.data
-}
+export const editPost = async (post: Post): Promise<Post> => {
+  const response = await http.put(`/posts/${post.id}`, post);
+  return response.data;
+};

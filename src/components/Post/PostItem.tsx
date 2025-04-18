@@ -7,19 +7,17 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import PostDetailModal from '../modal/PostDetailModal';
-import { Post } from '../../model/Post.model';
-import { EditIcon } from '../../assets/svgIcon';
-
-const PostItem = ({
-  post,
-  onEditSuccess,
-}: {
+import { Post } from '@/src/model/post.model';
+import { EditIcon } from '@/src/assets/svgIcon';
+import PostDetailModal from './PostDetailModal';
+import PostEditForm from './PostEditForm';
+type PostItemProps = {
   post: Post;
   onEditSuccess: () => void;
-}) => {
+};
+const PostItem = ({ post, onEditSuccess }: PostItemProps) => {
   const [showPostDetail, setShowPostDetail] = useState<boolean>(false);
-  const [actionEdit, setActionEdit] = useState<boolean>(false);
+  const [showPostEditForm, setShowPostEditForm] = useState<boolean>(false);
   const handleOpenPostDetailModal = () => {
     setShowPostDetail(true);
   };
@@ -27,13 +25,32 @@ const PostItem = ({
   const handleClosePostDetail = () => {
     setShowPostDetail(false);
   };
+  const handleOpenPostEditForm = () => {
+    setShowPostEditForm(true);
+  };
+
+  const handleClosePostEditForm = () => {
+    setShowPostEditForm(false);
+  };
+  const postDetailModalProps = {
+    postId: post.id,
+    showPostDetail,
+    closePostDetailModal: handleClosePostDetail,
+  } as const;
+
+  const postEditFormProps = {
+    postId: post.id,
+    showPostEditForm,
+    closeEditPostForm: handleClosePostEditForm,
+    onEditSuccess: onEditSuccess,
+  } as const;
+
   return (
     <SafeAreaProvider>
       <SafeAreaView>
         <TouchableOpacity
           onPress={() => {
             handleOpenPostDetailModal();
-            setActionEdit(false);
           }}>
           <View style={styles.container}>
             <Text style={styles.title}>Titlte: {post.title}</Text>
@@ -43,23 +60,15 @@ const PostItem = ({
             <TouchableOpacity
               style={styles.buttonEdit}
               onPress={() => {
-                handleOpenPostDetailModal();
-                setActionEdit(true);
+                handleOpenPostEditForm();
               }}>
               <EditIcon />
               <Text style={styles.editLabel}>Edit</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-        {showPostDetail && (
-          <PostDetailModal
-            postId={post.id}
-            showPostDetail={showPostDetail}
-            closePostDetailModal={handleClosePostDetail}
-            actionEdit={actionEdit}
-            onEditSuccess={onEditSuccess}
-          />
-        )}
+        {showPostDetail && <PostDetailModal {...postDetailModalProps} />}
+        {showPostEditForm && <PostEditForm {...postEditFormProps} />}
       </SafeAreaView>
     </SafeAreaProvider>
   );
