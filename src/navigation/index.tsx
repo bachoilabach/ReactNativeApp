@@ -15,6 +15,7 @@ import { NotFound } from './screens/NotFound';
 import New from './screens/New';
 import { PostIcon, UserIcon } from '../assets/svgIcon';
 import Posts from './screens/Posts';
+import Images from './screens/Images';
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
@@ -52,11 +53,15 @@ const HomeTabs = createBottomTabNavigator({
     Posts: {
       screen: Posts,
       options: {
-        tabBarIcon: ({ color }) => (
-          <PostIcon color={color} />
-        )
-      }
-    }
+        tabBarIcon: ({ color }) => <PostIcon color={color} />,
+      },
+    },
+    Images: {
+      screen: Images,
+      options: {
+        tabBarIcon: ({ color }) => <PostIcon color={color} />,
+      },
+    },
   },
 });
 
@@ -71,10 +76,10 @@ const RootStack = createNativeStackNavigator({
     },
     Pots: {
       screen: Posts,
-      options:{
+      options: {
         title: 'Posts',
-        headerShown: true
-      }
+        headerShown: true,
+      },
     },
     Settings: {
       screen: Settings,
@@ -97,6 +102,12 @@ const RootStack = createNativeStackNavigator({
           </HeaderButton>
         ),
       }),
+    },
+    Images: {
+      screen: Images,
+      options: {
+        title: 'Images',
+      },
     },
     NotFound: {
       screen: NotFound,
