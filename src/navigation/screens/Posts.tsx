@@ -9,8 +9,8 @@ import { useIsFocused } from '@react-navigation/native';
 
 export default function Posts() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [searchInput, setSearchInput] = useState<string>('');
-  const debouncedSearchInput = useDebounce(searchInput, 300);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const debouncedSearchInput = useDebounce(searchTerm, 300);
 
   const handleGetAllPosts = async () => {
     try {
@@ -41,8 +41,8 @@ export default function Posts() {
         <Text style={styles.searchText}>Tìm kiếm</Text>
         <TextInput
           style={styles.searchInput}
-          value={searchInput}
-          onChangeText={(text) => setSearchInput(text)}
+          value={searchTerm}
+          onChangeText={(text) => setSearchTerm(text)}
         />
         <Text style={styles.header}>Posts</Text>
         <FlatList

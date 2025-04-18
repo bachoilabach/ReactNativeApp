@@ -10,7 +10,6 @@ import {
 import React, { useEffect, useState } from 'react';
 import {
   editPost,
-  getAllPosts,
   getPostById,
 } from '../../services/post.services';
 import { Post } from '../../model/Post.model';
