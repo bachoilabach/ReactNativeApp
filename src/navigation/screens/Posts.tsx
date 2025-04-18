@@ -1,36 +1,20 @@
-import {
-  StyleSheet,
-  FlatList,
-  Text,
-  View,
-  TextInput,
-} from 'react-native';
+import { StyleSheet, FlatList, Text, View, TextInput } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaProvider,
-  SafeAreaView,
-} from 'react-native-safe-area-context';
-import {
-  getAllPost,
-  getAllUsers,
-} from '../../services/post.services';
-import { PostProps } from '../../interface/PostInterface';
-
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import PostItem from '../../components/Post/PostItem';
 import { useDebounce } from '../../hooks/useDebounce';
+import { getAllPosts } from '../../services/post.services';
+import { Post } from '../../model/Post.model';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Posts() {
-  const [posts, setPosts] = useState<PostProps[]>([]);
-  const [searchInput, setSearchInput] =
-    useState<string>('');
-  const debouncedSearchInput = useDebounce(
-    searchInput,
-    300
-  );
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [searchInput, setSearchInput] = useState<string>('');
+  const debouncedSearchInput = useDebounce(searchInput, 300);
 
   const handleGetAllPosts = async () => {
     try {
-      let response = await getAllPost();
+      let response = await getAllPosts();
       setPosts(response);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -43,9 +27,7 @@ export default function Posts() {
   useEffect(() => {
     if (debouncedSearchInput) {
       const filteredPosts = posts.filter((post) =>
-        post.title
-          .toLowerCase()
-          .includes(debouncedSearchInput.toLowerCase())
+        post.title.toLowerCase().includes(debouncedSearchInput.toLowerCase())
       );
       setPosts(filteredPosts);
     } else {
@@ -66,7 +48,7 @@ export default function Posts() {
         <FlatList
           data={posts}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <PostItem {...item} />}
+          renderItem={({ item }) => <PostItem post={item} onEditSuccess={handleGetAllPosts}/>}
         />
       </SafeAreaView>
     </SafeAreaProvider>

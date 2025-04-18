@@ -4,97 +4,164 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
-  ActivityIndicator,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
-import React, { useCallback, useState } from 'react';
-import { getPostById } from '../../services/post.services';
-import { useFocusEffect } from '@react-navigation/native';
-import { PostProps } from '../../interface/PostInterface';
+import React, { useEffect, useState } from 'react';
+import {
+  editPost,
+  getAllPosts,
+  getPostById,
+} from '../../services/post.services';
+import { Post } from '../../model/Post.model';
 
 const PostDetailModal = ({
   postId,
   showPostDetail,
   closePostDetailModal,
+  actionEdit,
+  onEditSuccess,
 }: {
-  postId: string;
+  postId: number;
   showPostDetail: boolean;
   closePostDetailModal: () => void;
+  actionEdit: boolean;
+  onEditSuccess: () => void;
 }) => {
-  const [postDetail, setPostDetail] = useState<PostProps>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [postDetail, setPostDetail] = useState<Post>();
+  const [isReady, setIsReady] = useState<boolean>(false);
+
+  const changeInput = (field: keyof Post, value: string) => {
+    setPostDetail((prev) => (prev ? { ...prev, [field]: value } : undefined));
+  };
 
   const handleGetPostById = async () => {
     try {
-      setLoading(true);
+      setIsReady(false);
       const response = await getPostById(postId);
       setPostDetail(response);
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+      setIsReady(true);
+    } catch (error) {
+      console.log(error);
+      setIsReady(true);
+    }
+  };
+
+  const handleEditPost = async () => {
+    try {
+      await editPost(postId, {
+        title: postDetail?.title,
+        body: postDetail?.body,
+      });
+      onEditSuccess();
+      closePostDetailModal();
     } catch (error) {
       console.log(error);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      if (showPostDetail) {
-        handleGetPostById();
-      }
-      console.log('Focus vào modal');
-      return () => {
-        console.log('Đã rời khỏi modal');
-      };
-    }, [showPostDetail, postId])
-  );
+  useEffect(() => {
+    handleGetPostById();
+  }, [postId]);
 
   return (
-    <Modal
-      visible={showPostDetail}
-      animationType="fade"
-      transparent={true}
-      onRequestClose={closePostDetailModal}>
-      <TouchableWithoutFeedback
-        onPress={closePostDetailModal}>
-        <View style={styles.container}>
-          <TouchableWithoutFeedback>
-            <View style={styles.modalContent}>
-              {loading ? (
-                <ActivityIndicator
-                  size="large"
-                  color="#0000ff"
-                />
-              ) : (
-                <View>
-                  <View>
-                    <Text style={styles.title}>
-                      Title: {postDetail?.title}
-                    </Text>
-                    <Text style={styles.meta}>
-                      User ID: {postDetail?.userId}
-                    </Text>
-                    <Text style={styles.meta}>
-                      Post ID: {postDetail?.id}
-                    </Text>
-                    <Text style={styles.body}>
-                      Body: {postDetail?.body}
-                    </Text>
+    <>
+      {isReady && (
+        <Modal
+          visible={showPostDetail}
+          animationType="fade"
+          transparent={true}
+          onRequestClose={closePostDetailModal}>
+          <TouchableWithoutFeedback onPress={closePostDetailModal}>
+            {actionEdit ? (
+              // * Edit
+              <View style={styles.container}>
+                <TouchableWithoutFeedback>
+                  <View style={styles.modalContent}>
+                    <Text style={styles.editText}>Edit</Text>
+                    <View>
+                      <Text style={styles.meta}>
+                        User ID: {postDetail?.userId}
+                      </Text>
+                      <Text style={styles.meta}>Post ID: {postDetail?.id}</Text>
+
+                      <View style={styles.inputContainer}>
+                        <View style={styles.inputField}>
+                          <Text style={styles.label}>Title:</Text>
+                          <TextInput
+                            style={styles.input}
+                            value={postDetail?.title}
+                            multiline={true}
+                            onChangeText={(text) => changeInput('title', text)}
+                          />
+                        </View>
+                        <View style={styles.inputField}>
+                          <Text style={styles.label}>Body:</Text>
+                          <TextInput
+                            style={[styles.input, styles.bodyInput]}
+                            value={postDetail?.body}
+                            onChangeText={(text) => changeInput('body', text)}
+                            multiline={true}
+                          />
+                        </View>
+                      </View>
+                      <View style={styles.actionButtonsWrapper}>
+                        <TouchableOpacity
+                          style={[styles.button, styles.buttonSave]}
+                          onPress={handleEditPost}>
+                          <Text
+                            style={[styles.buttonText, styles.buttonSaveText]}>
+                            Save
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[styles.button, styles.buttonClose]}
+                          onPress={closePostDetailModal}>
+                          <Text
+                            style={[styles.buttonCloseText, styles.buttonText]}>
+                            Close
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                   </View>
-                  <TouchableOpacity
-                    style={styles.buttonClose}
-                    onPress={closePostDetailModal}>
-                    <Text style={styles.buttonCloseText}>
-                      Close
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
+                </TouchableWithoutFeedback>
+              </View>
+            ) : (
+              // * Show detail
+              <View style={styles.container}>
+                <TouchableWithoutFeedback>
+                  <View style={styles.modalContent}>
+                    <View>
+                      <Text style={styles.title}>
+                        Title: {postDetail?.title}
+                      </Text>
+                      <Text style={styles.meta}>
+                        User ID: {postDetail?.userId}
+                      </Text>
+                      <Text style={styles.meta}>Post ID: {postDetail?.id}</Text>
+                      <Text style={styles.body}>Body: {postDetail?.body}</Text>
+                      <TouchableOpacity
+                        style={[
+                          styles.buttonClose,
+                          styles.button,
+                          styles.flexEnd,
+                        ]}
+                        onPress={closePostDetailModal}>
+                        <Text
+                          style={[styles.buttonCloseText, styles.buttonText]}>
+                          Close
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+            )}
           </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
+        </Modal>
+      )}
+    </>
   );
 };
 
@@ -109,7 +176,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '90%',
-    height: '40%',
+    height: '50%',
     backgroundColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 20,
@@ -126,7 +193,7 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
   },
   meta: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
     marginBottom: 5,
   },
@@ -136,18 +203,67 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'justify',
   },
-  buttonClose: {
-    backgroundColor: 'red',
+  button: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginTop: 20,
+  },
+  buttonClose: {
+    backgroundColor: 'red',
+    borderColor: 'red',
+    borderWidth: 1,
+  },
+  flexEnd: {
     alignSelf: 'flex-end',
   },
-  buttonCloseText: {
-    color: 'white',
+  buttonSave: {
+    backgroundColor: 'green',
+  },
+  buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: 'white',
+  },
+  buttonCloseText: {
+    color: 'black',
+  },
+  buttonSaveText: {
+    color: 'white',
+  },
+  editText: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  inputContainer: {
+    marginTop: 20,
+    width: '100%',
+  },
+  inputField: {
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    color: '#333',
+    backgroundColor: '#f9f9f9',
+  },
+  bodyInput: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  actionButtonsWrapper: {
+    flexDirection: 'row',
+    gap: 8,
   },
 });
