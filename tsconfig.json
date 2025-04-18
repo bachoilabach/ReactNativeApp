@@ -7,12 +7,12 @@
     "paths": {
       "@/*": ["*"],
       "@controllers/*": ["controllers/*"],
-      "@models/*": ["src/model/*"], // Alias cho thư mục model
+      "@models/*": ["src/model/*"], 
       "@utils/*": ["utils/*"],
-      "@components/*": ["src/components/*"], // Alias cho thư mục components
-      "@services/*": ["src/services/*"], // Alias cho thư mục services
-      "@props/*": ["src/props/*"], // Alias cho thư mục props
-      "@screens/*": ["src/navigation/screens/*"] // Alias cho thư mục screens
+      "@components/*": ["src/components/*"],
+      "@services/*": ["src/services/*"], 
+      "@props/*": ["src/props/*"], 
+      "@screens/*": ["src/navigation/screens/*"] 
     }
   }
 }
